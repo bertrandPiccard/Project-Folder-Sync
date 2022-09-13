@@ -17,14 +17,11 @@ def getMismatchFiles(srcF,repF):
     filecmp.clear_cache()
     
     #Compare Source and Replica folder and get a list of common files (not identical). 
-    dcCommon = filecmp.dircmp(srcF,repF).common_files
-    
-    subDir = filecmp.dircmp(srcF,repF).common_dirs
-    print(filecmp.cmpfiles(srcF,repF,common=subDir,shallow=True))
-
+    listFiles = filecmp.dircmp(srcF,repF).common_files
+ 
     #Compare the list of common file to check if there are identical or not. Re
     #The first position of the tab represent the match, second position the mismatch and third position the errors
-    return filecmp.cmpfiles(srcF,repF,common=dcCommon,shallow=True)[1] 
+    return filecmp.cmpfiles(srcF,repF,common=listFiles,shallow=True)[1] 
 
 
 def synchroniseFolder(srcF,repF,logger):

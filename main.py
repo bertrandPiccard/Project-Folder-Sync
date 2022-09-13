@@ -9,6 +9,14 @@ import filecmp
 
 from synchronisation import synchroniseFolder
 
+def getAllSubDir(src):
+    listSubDir = []
+    for root, dirs,files in os.walk(os.path.abspath(src)):
+        for dir in dirs:
+            listSubDir.append(os.path.join(root, dir))
+
+    return listSubDir
+
 def start(args):
      #Affect the variables for better visibility
     srcF = args.source
@@ -25,8 +33,18 @@ def start(args):
             logging.StreamHandler(sys.stdout)
         ]
     )
-    # Start the synchronisation of the folder
+
+
+
+    # Start the synchronisation of the main folder
     synchroniseFolder(srcF,repF,logging)
+
+    listSubDir = getAllSubDir(srcF)
+    for s in listSubDir:
+        r = s.removeprefix(srcF)
+        r = repF + r
+        print(r)
+        synchroniseFolder(s,r,logging)
 
 
 
