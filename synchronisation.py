@@ -1,63 +1,56 @@
 
-import threading
-import os
-from datetime import datetime
 import filecmp
+import operation
 
 
-def printit():
-  threading.Timer(3.0, printit).start()
-  print("Hello, World!" + str(datetime.now()))
-
-path="C:/Users/Bertrand/Desktop/"
-
-src="C:/Users/Bertrand/Desktop/Source/Option 3.pdf"
-rep="C:/Users/Bertrand/Desktop/Replicat/Option 3.pdf"
-
-srcF="C:/Users/Bertrand/Desktop/Source/"
-repF="C:/Users/Bertrand/Desktop/Replicat/"
-
-
-def getFileToDelete() :
+def getFileToDelete(srcF,repF) :
     #Compare Source and Replica folder and get the files only available in the Replica folder. Return a list of files
     return filecmp.dircmp(srcF,repF).right_only
 
-def getFileToCreate():
+def getFileToCreate(srcF,repF):
     #Compare Source and Replica folder and get the files only available in the Source folder. Return a list of files
     return filecmp.dircmp(srcF,repF).left_only
  
 
-def getMismatchFiles():
+def getMismatchFiles(srcF,repF):
+
+    filecmp.clear_cache()
+    
     #Compare Source and Replica folder and get a list of common files (not identical). 
-    dcCommon = filecmp.dircmp(srcF,repF).common
+    dcCommon = filecmp.dircmp(srcF,repF).common_files
+    
+    subDir = filecmp.dircmp(srcF,repF).common_dirs
+    print(filecmp.cmpfiles(srcF,repF,common=subDir,shallow=True))
+
     #Compare the list of common file to check if there are identical or not. Re
     #The first position of the tab represent the match, second position the mismatch and third position the errors
     return filecmp.cmpfiles(srcF,repF,common=dcCommon,shallow=True)[1] 
 
 
-def synchroniseFolder():
+def synchroniseFolder(srcF,repF,logger):
     #Check if there are file to delete in Replica folder
-    deleteList = getFileToDelete()
+    deleteList = getFileToDelete(srcF,repF)
     if len(deleteList) == 0 :
-        print("Zero file to delete")
+        logger.warning("Zero file to delete...")
     else:
-        print("Remove files:" + str(deleteList) )
-
-    #Check if new files need to be created
-    createList = getFileToCreate()
-    if len(createList) == 0 :
-        print("Zero file to create")
-    else:
-        print("Create files:" + str(createList) )
+        operation.deleteFiles(deleteList,logger,repF)
 
     #Check files to update
-    updateList = getMismatchFiles()
+    updateList = getMismatchFiles(srcF,repF)
+    
     if len(updateList) == 0 :
-        print("Zero file to update")
+        logger.warning("Zero file to update...")
     else:
-        print("Update files:" + str(updateList) )
+        operation.updateFiles(updateList,logger,srcF,repF)
+
+     #Check if new files need to be created
+    createList = getFileToCreate(srcF,repF)
+    if len(createList) == 0 :
+        logger.warning("Zero file to create...")
+    else:
+        operation.createFiles(createList, logger,srcF,repF)
 
 
 
 
-synchroniseFolder()
+
