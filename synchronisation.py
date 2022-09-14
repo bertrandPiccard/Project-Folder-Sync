@@ -1,4 +1,3 @@
-
 import filecmp
 import operations
 import os
@@ -11,11 +10,11 @@ def getAllSubDir(src):
 
     return listSubDir
 
-def getFileToDelete(srcF,repF) :
+def getToDelete(srcF,repF) :
     #Compare Source and Replica folder and get the files only available in the Replica folder. Return a list of files
     return filecmp.dircmp(srcF,repF).right_only
 
-def getFileToCreate(srcF,repF):
+def getToCreate(srcF,repF):
     #Compare Source and Replica folder and get the files only available in the Source folder. Return a list of files
     return filecmp.dircmp(srcF,repF).left_only
  
@@ -35,22 +34,22 @@ def getMismatchFiles(srcF,repF):
 def synchroniseFolder(srcF,repF,logger):
     
     #Check if there are file to delete in Replica folder
-    deleteList = getFileToDelete(srcF,repF)
+    deleteList = getToDelete(srcF,repF)
     if len(deleteList) > 0 :
-        operations.deleteFiles(deleteList,logger,repF)
+        operations.delete(deleteList,logger,repF)
 
     #Check files to update
     updateList = getMismatchFiles(srcF,repF)
     
     if len(updateList) > 0 :
-        operations.updateFiles(updateList,logger,srcF,repF)
+        operations.updateFile(updateList,logger,srcF,repF)
 
      #Check if new files need to be created
-    createList = getFileToCreate(srcF,repF)
+    createList = getToCreate(srcF,repF)
     if len(createList) > 0 :
-        operations.createFiles(createList, logger,srcF,repF)
+        operations.create(createList, logger,srcF,repF)
     
-    #Check the subdirectories and will synchronise them as well
+    #Check for subdirectories and will synchronise them as well if needed
     listSubDir = getAllSubDir(srcF)
     if len(listSubDir) > 0:
         for s in listSubDir:

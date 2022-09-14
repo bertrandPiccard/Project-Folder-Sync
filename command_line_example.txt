@@ -1,5 +1,4 @@
-python .\main.py -s "C:\Users\Bertrand\Desktop\Source" -r "C:\Users\Bertrand\Desktop\Replica" -l
- "C:\Users\Bertrand\Desktop\Log" -i 6
+python .\main.py -s "C:\Users\Bertrand\Desktop\Source" -r "C:\Users\Bertrand\Desktop\Replica" -l "C:\Users\Bertrand\Desktop\Log" -i 6
 
 usage: main.py [-h] -s SOURCE -r REPLICA -i INTERVAL -l LOG
 
