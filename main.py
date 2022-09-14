@@ -1,50 +1,41 @@
  
 import argparse
 import os 
-import threading
+import time
 from datetime import datetime
-import logging
-import sys
-import filecmp
+
+import logger
 
 from synchronisation import synchroniseFolder
 
-def getAllSubDir(src):
-    listSubDir = []
-    for root, dirs,files in os.walk(os.path.abspath(src)):
-        for dir in dirs:
-            listSubDir.append(os.path.join(root, dir))
 
-    return listSubDir
 
 def start(args):
      #Affect the variables for better visibility
-    srcF = args.source
-    repF = args.replica
-    logF = args.log
+    srcF = os.path.abspath(args.source)
+    repF = os.path.abspath(args.replica)
+    logF = os.path.abspath(args.log)
     interval = args.interval
 
     # Configure the logger 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.FileHandler(logF+"log.txt"),
-            logging.StreamHandler(sys.stdout)
-        ]
-    )
+    log = logger.getLogger(logF)
+
+    # Clear terminal for better visibility
+    os.system('cls')
 
 
+    #The synchronisation will be executed periodically with interval
+    counter=0
+    while counter < 10:
+        counter += 1
+        print(">>> Synchronisation N°: " + str(counter) + " "+ str(time.asctime(time.localtime())))
+        synchroniseFolder(srcF,repF,log)
+        time.sleep(interval)
 
-    # Start the synchronisation of the main folder
-    synchroniseFolder(srcF,repF,logging)
 
-    listSubDir = getAllSubDir(srcF)
-    for s in listSubDir:
-        r = s.removeprefix(srcF)
-        r = repF + r
-        print(r)
-        synchroniseFolder(s,r,logging)
+    print(">>> Synchronisation finished...")
+
+
 
 
 
@@ -69,8 +60,3 @@ elif args.interval < 5:
 else:
     start(args)
    
-
-
-def printit():
-  threading.Timer(3.0, printit).start()
-  print("Hello, World!" + str(datetime.now()))

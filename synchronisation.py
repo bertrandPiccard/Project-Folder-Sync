@@ -1,7 +1,15 @@
 
 import filecmp
-import operation
+import operations
+import os
 
+def getAllSubDir(src):
+    listSubDir = []
+    for root, dirs,files in os.walk(os.path.abspath(src)):
+        for dir in dirs:
+            listSubDir.append(os.path.join(root, dir))
+
+    return listSubDir
 
 def getFileToDelete(srcF,repF) :
     #Compare Source and Replica folder and get the files only available in the Replica folder. Return a list of files
@@ -25,27 +33,30 @@ def getMismatchFiles(srcF,repF):
 
 
 def synchroniseFolder(srcF,repF,logger):
+    
     #Check if there are file to delete in Replica folder
     deleteList = getFileToDelete(srcF,repF)
-    if len(deleteList) == 0 :
-        logger.warning("Zero file to delete...")
-    else:
-        operation.deleteFiles(deleteList,logger,repF)
+    if len(deleteList) > 0 :
+        operations.deleteFiles(deleteList,logger,repF)
 
     #Check files to update
     updateList = getMismatchFiles(srcF,repF)
     
-    if len(updateList) == 0 :
-        logger.warning("Zero file to update...")
-    else:
-        operation.updateFiles(updateList,logger,srcF,repF)
+    if len(updateList) > 0 :
+        operations.updateFiles(updateList,logger,srcF,repF)
 
      #Check if new files need to be created
     createList = getFileToCreate(srcF,repF)
-    if len(createList) == 0 :
-        logger.warning("Zero file to create...")
-    else:
-        operation.createFiles(createList, logger,srcF,repF)
+    if len(createList) > 0 :
+        operations.createFiles(createList, logger,srcF,repF)
+    
+    #Check the subdirectories and will synchronise them as well
+    listSubDir = getAllSubDir(srcF)
+    if len(listSubDir) > 0:
+        for s in listSubDir:
+            r = s.removeprefix(srcF)
+            r =  os.path.abspath(repF + r)
+            synchroniseFolder(s,r,logger)
 
 
 

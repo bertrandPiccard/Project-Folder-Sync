@@ -28,14 +28,16 @@ def createFiles(list,logger,srcF,repF):
 # Update function will remove the folder or file from replica folder and copy the version from the source folder
 def updateFiles(list,logger,srcF,repF):
     for i in list:
-        if os.path.isfile(srcF + i):
-            os.remove(repF + i)
-            shutil.copy(srcF + i, repF + i)
-        elif os.path.isdir(srcF + i):
-            shutil.rmtree(repF + i)
-            shutil.copytree(srcF + i, repF + i)
+        fullPathS = os.path.abspath(srcF + "/" +i)
+        fullPathR = os.path.abspath(repF + "/" + i)
+        if os.path.isfile(fullPathS):
+            os.remove(fullPathR)
+            shutil.copy(fullPathS, fullPathR)
+        elif os.path.isdir(fullPathS):
+            shutil.rmtree(fullPathR)
+            shutil.copytree(fullPathS, fullPathR)
 
       
     
-        logger.info("[UPDATED] " + "'"+ i +"'"+ " was updated in replica folder")    
+        logger.info("[UPDATED] " + "'"+ i +"'"+ " was updated in " + os.path.abspath(repF))    
        
