@@ -1,11 +1,8 @@
- 
 import argparse
 import os 
 import time
-from datetime import datetime
 
 import logger
-
 from synchronisation import synchroniseFolder
 
 
@@ -28,7 +25,7 @@ def start(args):
     counter=0
     while counter < 10:
         counter += 1
-        print(">>> Synchronisation N°: " + str(counter) + " "+ str(time.asctime(time.localtime())))
+        print(">>> Synchronisation N°: " + str(counter) + " - "+ str(time.asctime(time.localtime())))
         synchroniseFolder(srcF,repF,log)
         time.sleep(interval)
 
@@ -37,13 +34,11 @@ def start(args):
 
 
 
-
-
 #Define the command line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--source", help="Path of source folder",required=True)
 parser.add_argument("-r", "--replica", help="Path of replica folder",required=True)
-parser.add_argument("-i", "--interval", help="Interval between synchronisation (seconds)",type=int,default=5,required=True)
+parser.add_argument("-i", "--interval", help="Interval between synchronisation (seconds)",type=int,default=5)
 parser.add_argument("-l", "--log", help="Path of log folder",required=True)
 args = parser.parse_args()
 
