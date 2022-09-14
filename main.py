@@ -14,14 +14,14 @@ def start(args):
     logF = os.path.abspath(args.log)
     interval = args.interval
 
-    # Configure the logger 
+    # Retrieve configured logger 
     log = logger.getLogger(logF)
 
     # Clear terminal for better visibility
     os.system('cls')
 
 
-    #The synchronisation will be executed periodically with interval
+    #The synchronisation will be executed periodically based on the interval from arguments
     counter=0
     while counter < 10:
         counter += 1
@@ -43,7 +43,7 @@ parser.add_argument("-l", "--log", help="Path of log folder",required=True)
 args = parser.parse_args()
 
 
-#Check if the path are existing and if the value of the interval is higher or equal 5 seconds
+#Check if the path are existing and if the value of the interval is higher or equal to 5 (seconds)
 if os.path.isdir(args.source) == False:
     print("The path specified for the source is not existing or is invalid...")  
 elif os.path.isdir(args.replica) == False:
@@ -53,5 +53,6 @@ elif os.path.isdir(args.log) == False:
 elif args.interval < 5:
     print("The value of the interval has to be higher than 5 seconds...")
 else:
+    #if all the arguments are fine, then the script can start
     start(args)
    
