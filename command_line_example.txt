@@ -1,9 +1,9 @@
-python .\main.py -s "C:\Users\Bertrand\Desktop\Source" -r "C:\Users\Bertrand\Desktop\Replica" -l "C:\Users\Bertrand\Desktop\Log" -i 6
+python main.py -s "<sourcePath>" -r "<replicaPath>" -l "<logPath>" -i <interval>
 
 usage: main.py [-h] -s SOURCE -r REPLICA -i INTERVAL -l LOG
 
 options:
-  -h, --help            show this help message and exit
+  -h, --help            Show this help message and exit
   -s SOURCE, --source SOURCE
                         Path of source folder
   -r REPLICA, --replica REPLICA

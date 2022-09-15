@@ -3,7 +3,7 @@ import sys
 
 
 # Logger path will be configured based on the argument
-# Two handlers are needed for the file output and command output
+# Two handlers are needed for the file output and console output
 def getLogger(logF):
     logging.basicConfig(
         level=logging.INFO,

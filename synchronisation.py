@@ -12,11 +12,11 @@ def getAllSubDir(src):
     return listSubDir
 
 def getToDelete(srcF,repF) :
-    #Compare Source and Replica folder and get the files and directories only available in the Replica folder. Return a list of files and directory names
+    #Compare Source and Replica folders and get the files and directories only available in the Replica folder. Return a list of files and directory names
     return filecmp.dircmp(srcF,repF).right_only
 
 def getToCreate(srcF,repF):
-    #Compare Source and Replica folder and get the files and directories only available in the Source folder. Return a list of file and directory names
+    #Compare Source and Replica folders and get the files and directories only available in the Source folder. Return a list of file and directory names
     return filecmp.dircmp(srcF,repF).left_only
  
 
@@ -24,7 +24,7 @@ def getMismatchFiles(srcF,repF):
 
     filecmp.clear_cache()
     
-    #Compare Source and Replica folder and get a list of common files (name matching, not necessarily identical). 
+    #Compare Source and Replica folders and get a list of common files (name matching, not necessarily identical). 
     listFiles = filecmp.dircmp(srcF,repF).common_files
  
     #Compare the list of common file to check if there are identical or not. 
@@ -50,7 +50,7 @@ def synchroniseFolder(srcF,repF,logger):
     if len(createList) > 0 :
         operations.create(createList, logger,srcF,repF)
     
-    #Check for subdirectories and will synchronise them as well if needed
+    #Check for subdirectories and will synchronize them as well if needed
     listSubDir = getAllSubDir(srcF)
     if len(listSubDir) > 0:
         for s in listSubDir:

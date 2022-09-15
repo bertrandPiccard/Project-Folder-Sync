@@ -14,7 +14,7 @@ def start(args):
     logF = os.path.abspath(args.log)
     interval = args.interval
 
-    # Retrieve configured logger 
+    # Retrieve the configured logger 
     log = logger.getLogger(logF)
 
     # Clear terminal for better visibility
@@ -43,7 +43,7 @@ parser.add_argument("-l", "--log", help="Path of log folder",required=True)
 args = parser.parse_args()
 
 
-#Check if the path are existing and if the value of the interval is higher or equal to 5 (seconds)
+#Check if the paths are existing and if the value of the interval is higher or equal to 5 (seconds)
 if os.path.isdir(args.source) == False:
     print("The path specified for the source is not existing or is invalid...")  
 elif os.path.isdir(args.replica) == False:

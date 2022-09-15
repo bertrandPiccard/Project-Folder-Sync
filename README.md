@@ -14,8 +14,8 @@ More details on the requirements:
 - No usage of third-party libraries that implement folder synchronization
 - It is allowed (and recommended) to use external libraries implementing other well-known algorithms 
 
-# Librairies
-In this project the following libraries have been used.
+# Libraries
+In this project the following libraries have been used:
 
 - [logging](https://docs.python.org/3/howto/logging.html)
 
@@ -32,29 +32,32 @@ In this project the following libraries have been used.
 - [time](https://docs.python.org/3/library/time.html?highlight=time#module-time)
 
 # How to use
-When the project is available locally, open the terminal on the path of the folder. 
+When the project is available locally, open the terminal on the path of the project folder. 
 
 The script can be executed with the following command (example):
 
 ``` 
-python main.py -s "C:\Users\Bertrand\Desktop\Source" -r "C:\Users\Bertrand\Desktop\Replica" -l
- "C:\Users\Bertrand\Desktop\Log" -i 6
+main.py -s "<sourcePath>" -r "<replicaPath>" -l "<logPath>" -i <interval>
 
  ```
 
 Make sure the all the folders are created beforehand. If the path is not existing or invalid, the script will stop before the synchronization and a message will be printed in the terminal. Also make sure Python is installed on the computer.
 
+The path arguments are required, but not the interval. It default value is 5 (seconds).
+
 The command arguments are as follows:
 
-  > -h, --help       Show help message and exit
+```
+  -h, --help       Show help message and exit
 
-  > -s, --source:    Path of source folder
+  -s, --source:    Path of source folder
 
-  > -r, --replica:   Path of replica folder
+  -r, --replica:   Path of replica folder
 
-  > -i, --interval:  Interval between synchronization (seconds)
+  -i, --interval:  Interval between synchronization (seconds)
 
-  > -l, --log:       Path of log folder
+  -l, --log:       Path of log folder
+```
 
  The minimum interval to set between the synchronization is 5 seconds. 
 
@@ -78,7 +81,7 @@ The command arguments are as follows:
 ## Update
 The update operation is done only on files. 
 
-A source and replica folder is provided to the function "getMismatchFiles" and will return a list of files that's not matching. 
+Source and replica folders are provided to the function "getMismatchFiles" and it will return a list of files that's not matching. 
 
 The function uses the library "filecmp" to compare the two folders and get the common files (matching names). Then, it will compare each files from this list and return the list of mismatch files. 
 
@@ -90,9 +93,9 @@ If a file or directory is renamed, it is considered as another instance. Instead
 ## Delete
 The delete operation uses the function "getToDelete" to receive a list of file or directory to remove. This operation is done only on the replica folder.
 
-This list is generating by comparing the two folders, the "right_only" attribute allow to get the file or directory only available in the replica folder. In other words, there is no match for them in the source folder and should not be there. 
+This list is generating by comparing the two folders, the "right_only" attribute allow to get the files or directories only available in the replica folder. In other words, there is no match for them in the source folder and should not be there. 
 
-The operation is meant for the files and directories, a different command is needed for the removing as more privilege is needed for the directories. It is the reason of the test with "if" "isFile" or "isDir".
+The operation is meant for the files and directories, a different command is needed for removing directories as more privilege is required. It is the reason of the test with "if" "isFile" or "isDir".
 
 ## Create
 Create operation is meant for files and directories. When a file or directory is present in the source folder, but not in the replica. 
@@ -101,10 +104,10 @@ The list is provided by the function "getToCreate", which will compare two folde
 
 The function "create" will loop on the list to copy each file or directory in the replica folder.
 
-When a folder is copied, all of its content will be copied in the replica folder. 
+When a directory is copied, all of its content will be copied in the replica folder. 
 
 # Recursive function "synchroniseFolder"
-The function synchronization is initially executed to compare the source and replica folder. Then it will arrange the content to be the same. However, we also need to check the subdirectories to ensure that all the files inside are matching. 
+The function synchronization is initially executed to compare the source and replica folder. Then, it will arrange the content to be the same. However, we also need to check the subdirectories to ensure that all the files inside are matching. 
 
 At the end of the function "synchroniseFolder", it will get a list of all subdirectories from the source folder. If none is present, the script stops.
 
@@ -113,29 +116,42 @@ On the other hand, if there are subdirectories, the function will be called agai
 # Logging
 The logger is generated in "logger.py" and is passed into the function "synchroniseFolder" in order to be used during the operations. 
 
-The logger is able to log into a file, which its path has to be mentioned in the arguments and also in the command output. 
+The logger is able to log into a file, which its path has to be mentioned in the arguments and also in the console output. 
 
-In order to do so, two handlers have to be configured to redirect the log into the file and the command output:
+In order to do so, two handlers have to be configured to redirect the log into the file and the console output:
 -  >FileHandler(path +"\log.txt")
 
 - >StreamHandler(sys.stdout)
 
-The path of the log folder has to be valid otherwise the script will print a message. 
+The path of the log folder has to be existing  otherwise the script will print a message and stop.
 
 # Command line arguments
 The command line arguments are handled with the library "argparse". All paths are required and will be tested with "os.path.isDir" to check if it is existing or valid path. If that's not the case, the script will print a message and stop.
 
 The interval argument is not required, but has a default value of 5. The value is in seconds and is tested to be higher than 5, otherwise the script will print a message and stop. 
 
-The default value of 5 has been decided on my own. It could be changed if needed. 
+The interval default value has been set to 5 seconds.
 
 # Synchronization execution
 In the current state of the project, the script will execute 10 synchronizations with the interval specified in the arguments. After that the program will stop.
 
-This aim to not have the script executing forever in the terminal. 
+The reason is to have an end to the script, otherwise it will run until it is manually interrupted. 
 
-If it is wanted to have the script to continue, the loop while can be modified like this:
+In case of the script is needed to run forever, the loop while can be modified with a true condition:
 
 > while True:
 
-And it can be manually stopped with CTRL+C, but will end up with an error in the terminal.
+And it can be manually interrupted with CTRL+C, but will end up with an error in the terminal.
+
+# Preview
+## Full cycle
+The script is executed with an interval of 6 seconds between synchronization and will loop for 10 times before ending.
+
+ ![Full cycle preview](/img/fullcycle-preview.png)
+
+The synchronization starts right away to have the content of the two folders matching. Then, manipulations can be done on the source or replica folder and each operation is logged in the console output as well as the log file. 
+
+## Log file
+When the script is executed, if the log file is not existing already, it will be created. If it already exists, the operation will be logged after the existing ones in the file. 
+
+ ![Log file preview ](/img/log-preview.png)
