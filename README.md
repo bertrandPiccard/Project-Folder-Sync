@@ -107,7 +107,7 @@ The function "create" will loop on the list to copy each file or directory in th
 When a directory is copied, all of its content will be copied in the replica folder. 
 
 # Recursive function "synchroniseFolder"
-The function synchronization is initially executed to compare the source and replica folder. Then, it will arrange the content to be the same. However, we also need to check the subdirectories to ensure that all the files inside are matching. 
+The synchronisation function is initially executed to compare the source and replica folder. Then, it will arrange the content to be the same. However, it also needs to check the subdirectories to ensure that all the files inside are matching. 
 
 At the end of the function "synchroniseFolder", it will get a list of all subdirectories from the source folder. If none is present, the script stops.
 
